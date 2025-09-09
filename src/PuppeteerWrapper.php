@@ -19,46 +19,13 @@ class PuppeteerWrapper extends BaseWrapper
     }
 
     /** @param array<mixed> $options */
-    private function processRequest(string $action, string $html, array $options, string $method = Request::METHOD_POST): string
+    private function processRequest(string $action, string $html, array $options = [], string $method = Request::METHOD_POST): string
     {
-        $footerAlign = $options['footer-centered'] ?? false ? 'center' : 'right';
-        $footerContent = str_replace(
-            [
-                '[page]',
-                '[nbPages]',
-            ],
-            [
-                '<span class="pageNumber"></span>',
-                '<span class="totalPages"></span>',
-            ],
-            (string) ($options['footer-content'] ?? '[page] / [nbPages]')
-        );
-
-        $footerTemplate = '<div style="font-size: 10px; text-align: ' . $footerAlign . ';' . ('right' === $footerAlign ? ' margin-right: 25px;' : '') . ' width: 100%;">' . $footerContent . '</div>';
-
-        $defaultOptions = [
-            'displayHeaderFooter' => false,
-            'headerTemplate' => '<div></div>', // no header
-            'footerTemplate' => $footerTemplate,
-
-            'landscape' => false,
-            'scale' => 1,
-            'format' => 'A4',
-            'margin' => [
-                'top' => '1cm',
-                'right' => '1cm',
-                'bottom' => '1cm',
-                'left' => '1cm',
-            ],
-            'printBackground' => true,
-            // 'tagged' => true, // @experimental
-        ];
-
         $uri = $this->puppeteerUrl . $action;
 
         $body = json_encode([
             'html' => $html,
-            'options' => array_merge($defaultOptions, $options),
+            'options' => array_merge($this->buildOptions(), $options),
         ], JSON_THROW_ON_ERROR);
 
         $request = $this->requestFactory
@@ -86,20 +53,16 @@ class PuppeteerWrapper extends BaseWrapper
         return $content;
     }
 
-    /** @param array<mixed> $options */
-    public function pdf(string $html, array $options = []): string
+    public function pdf(string $html): string
     {
-        return $this->processRequest('/pdf', $html, $options);
+        return $this->processRequest('/pdf', $html);
     }
 
-    public function screenshot(string $html, array $options = []): string
+    public function screenshot(string $html): string
     {
-        return $this->processRequest('/screenshot', $html, array_merge(
-            [
-                'format' => 'jpeg',
-                'quality' => 80,
-            ],
-            $options,
-        ));
+        return $this->processRequest('/screenshot', $html, [
+            'format' => 'jpeg',
+            'quality' => 80,
+        ]);
     }
 }

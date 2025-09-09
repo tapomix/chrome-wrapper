@@ -10,27 +10,23 @@ abstract class BaseWrapper
     /** @var array<string, mixed> */
     protected array $options = [];
 
-    /** @param array<string, mixed>  $options */
-    abstract public function pdf(string $html, array $options = []): string;
+    abstract public function pdf(string $html): string;
 
-    /** @param array<string, mixed>  $options */
-    abstract public function screenshot(string $html, array $options = []): string;
+    abstract public function screenshot(string $html): string;
 
-    /** @param array<string, mixed>  $options */
-    public function dwlPdf(string $html, string $fileName, array $options = []): Response
+    public function dwlPdf(string $html, string $fileName): Response
     {
         return $this->download(
-            content: $this->pdf($html, $options),
+            content: $this->pdf($html),
             fileName: $fileName,
             mime: 'application/pdf',
         );
     }
 
-    /** @param array<string, mixed>  $options */
-    public function dwlImg(string $html, string $fileName, array $options = []): Response
+    public function dwlImg(string $html, string $fileName): Response
     {
         return $this->download(
-            content: $this->screenshot($html, $options),
+            content: $this->screenshot($html),
             fileName: $fileName,
             mime: 'image/png', // image/jpeg
         );
@@ -78,6 +74,18 @@ abstract class BaseWrapper
         ];
 
         return $this;
+    }
+
+    /** @return array<string, string|bool> */
+    protected function buildOptions(): array
+    {
+        return [
+            'printBackground' => true,
+            'preferCSSPageSize' => true, // => use @page in css
+            'displayHeaderFooter' => (isset($this->options['header']) || isset($this->options['footer'])),
+            'headerTemplate' => isset($this->options['header']) ? $this->buildHeaderFooter($this->options['header']) : '<div></div>',
+            'footerTemplate' => isset($this->options['footer']) ? $this->buildHeaderFooter($this->options['footer']) : '<div></div>',
+        ];
     }
 
     /** @param array{text: string, align: 'left'|'center'|'right'} $data */
