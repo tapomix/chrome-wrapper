@@ -25,5 +25,8 @@
         "symfony/http-foundation": "6.4.*",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0"
+    },
+    "suggest": {
+        "nyholm/psr7": "PSR-7 implementation"
     }
 }
