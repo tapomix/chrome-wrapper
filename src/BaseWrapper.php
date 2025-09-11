@@ -85,6 +85,7 @@ abstract class BaseWrapper
             'displayHeaderFooter' => (isset($this->options['header']) || isset($this->options['footer'])),
             'headerTemplate' => isset($this->options['header']) ? $this->buildHeaderFooter($this->options['header']) : '<div></div>',
             'footerTemplate' => isset($this->options['footer']) ? $this->buildHeaderFooter($this->options['footer']) : '<div></div>',
+            'scale' => $this->options['scale'] ?? 1,
         ];
     }
 
