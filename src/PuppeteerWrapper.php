@@ -26,6 +26,10 @@ class PuppeteerWrapper extends BaseWrapper
         $body = json_encode([
             'html' => $html,
             'options' => array_merge($this->buildOptions(), $options),
+            'viewport' => [
+                'width' => $this->options['viewport']['width'] ?? 1920,
+                'height' => $this->options['viewport']['height'] ?? 0,
+            ],
         ], JSON_THROW_ON_ERROR);
 
         $request = $this->requestFactory
