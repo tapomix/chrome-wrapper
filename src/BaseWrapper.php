@@ -35,7 +35,7 @@ abstract class BaseWrapper
     public function setScale(float $scale = 1.0): static
     {
         $min = 0.1;
-        $max = 5;
+        $max = 2;
 
         if ($scale <= $min || $scale > $max) {
             throw new \Exception(sprintf('Scale must be in [%.1f, %.1f]', $min, $max));
