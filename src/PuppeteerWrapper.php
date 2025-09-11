@@ -65,8 +65,9 @@ class PuppeteerWrapper extends BaseWrapper
     public function screenshot(string $html): string
     {
         return $this->processRequest('/screenshot', $html, [
-            'format' => 'jpeg',
-            'quality' => 80,
+            'type' => 'png', // jpeg
+            // 'quality' => 80, // jpeg only
+            'fullPage' => true,
         ]);
     }
 }
